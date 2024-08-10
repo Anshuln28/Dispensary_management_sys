@@ -8,6 +8,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [forgotPassword, setForgotPassword] = useState(false);
     const [otp, setOtp] = useState('');
+    const [isOtpVerified, setIsOtpVerified] = useState(false);
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const { login } = useAuth();
@@ -17,25 +18,33 @@ const Login = () => {
         const selectedUserType = e.target.value;
         setUserType(selectedUserType);
 
-        // Disable forgot password for admin users
         if (selectedUserType === 'admin') {
             setForgotPassword(false);
         }
     };
 
+    const handleOtpVerification = () => {
+        // Replace this with actual OTP verification logic
+        if (otp === '123456') { // Simulating OTP verification for demonstration purposes
+            setIsOtpVerified(true);
+            alert('OTP verified successfully!');
+        } else {
+            alert('Invalid OTP. Please try again.');
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (forgotPassword) {
+        if (forgotPassword && isOtpVerified) {
             // Handle password reset logic here
             console.log({ userType, userId, otp, newPassword, confirmNewPassword });
-            // Reset states
             setForgotPassword(false);
             setPassword('');
             setOtp('');
             setNewPassword('');
             setConfirmNewPassword('');
-        } else {
-            // Perform authentication
+            setIsOtpVerified(false);
+        } else if (!forgotPassword) {
             try {
                 const response = await fetch('http://localhost:3000/auth/login', {
                     method: 'POST',
@@ -59,11 +68,9 @@ const Login = () => {
                     }
                 } else {
                     console.log('Login failed:', data.message);
-                    // Optionally, display a message to the user
                 }
             } catch (error) {
                 console.error('Error:', error);
-                // Optionally, display a message to the user
             }
         }
     };
@@ -77,7 +84,7 @@ const Login = () => {
                     <select
                         id="userType"
                         value={userType}
-                        onChange={handleUserTypeChange}  /* Use the new handleUserTypeChange function */
+                        onChange={handleUserTypeChange}
                         className="w-full p-2 border border-gray-300 rounded"
                         required
                     >
@@ -97,26 +104,28 @@ const Login = () => {
                         className="w-full p-2 border border-gray-300 rounded"
                     />
                 </div>
-                <div className="mb-4 relative">
-                    <label htmlFor="password" className="block text-lg mb-2">Password:</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="w-full p-2 border border-gray-300 rounded"
-                    />
-                    {userType !== 'admin' && !forgotPassword && (  /* Disable Forgot Password for Admins */
-                        <button
-                            type="button"
-                            onClick={() => setForgotPassword(true)}
-                            className="text-sm text-blue-900 absolute right-0 bottom-0 mr-2 mb-1"
-                        >
-                            Forgot Password
-                        </button>
-                    )}
-                </div>
-                {forgotPassword && userType !== 'admin' && (  /* Show only for non-admin users */
+                {!forgotPassword && (
+                    <div className="mb-4 relative">
+                        <label htmlFor="password" className="block text-lg mb-2">Password:</label>
+                        <input
+                            type="password"
+                            id="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded"
+                        />
+                        {userType !== 'admin' && (
+                            <button
+                                type="button"
+                                onClick={() => setForgotPassword(true)}
+                                className="text-sm text-blue-900 absolute right-0 bottom-0 mr-2 mb-1"
+                            >
+                                Forgot Password
+                            </button>
+                        )}
+                    </div>
+                )}
+                {forgotPassword && userType !== 'admin' && !isOtpVerified && (
                     <>
                         <div className="mb-4">
                             <label htmlFor="otp" className="block text-lg mb-2">OTP:</label>
@@ -126,8 +135,21 @@ const Login = () => {
                                 value={otp}
                                 onChange={(e) => setOtp(e.target.value)}
                                 className="w-full p-2 border border-gray-300 rounded"
+                                disabled={isOtpVerified}
                             />
                         </div>
+                        <button
+                            type="button"
+                            onClick={handleOtpVerification}
+                            className="w-full bg-blue-900 text-white p-2 rounded"
+                            disabled={isOtpVerified}
+                        >
+                            Verify OTP
+                        </button>
+                    </>
+                )}
+                {isOtpVerified && (
+                    <>
                         <div className="mb-4">
                             <label htmlFor="newPassword" className="block text-lg mb-2">New Password:</label>
                             <input
