@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 const ChangePassword = () => {
   const [formData, setFormData] = useState({
     userId: '',
+    user_type:'',
     oldPassword: '',
     newPassword: '',
     confirmNewPassword: '',
@@ -25,6 +26,7 @@ const ChangePassword = () => {
             setFormData((prevFormData) => ({
               ...prevFormData,
               userId: data.user.user_id,
+              user_type: data.user.user_type,
             }));
           } else {
             console.error('Error fetching user details:', data.message);
@@ -54,7 +56,7 @@ const ChangePassword = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ userId: formData.userId }),
+        body: JSON.stringify({ userId: formData.userId, user_type :formData.user_type}),
       });
 
       const data = await response.json();
@@ -130,7 +132,7 @@ const ChangePassword = () => {
       if (data.success) {
         alert("Password changed successfully");
         setFormData({
-          userId: '',
+          userId: formData.userId,
           oldPassword: '',
           newPassword: '',
           confirmNewPassword: '',

@@ -18,32 +18,89 @@ const Login = () => {
         const selectedUserType = e.target.value;
         setUserType(selectedUserType);
 
-        if (selectedUserType === 'admin') {
-            setForgotPassword(false);
+        // if (selectedUserType === 'admin') {
+        //     setForgotPassword(false);
+        // }
+    };
+
+    const handleSendOtp = async () => {
+        try {
+            const response = await fetch('http://localhost:3000/auth/send-otp-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ userId, user_type: userType  }),
+            });
+
+            if (response.ok) {
+                alert('OTP sent to your email.');
+            } else {
+                const data = await response.json();
+                alert(`Failed to send OTP: ${data.message}`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while sending the OTP.');
         }
     };
 
-    const handleOtpVerification = () => {
-        // Replace this with actual OTP verification logic
-        if (otp === '123456') { // Simulating OTP verification for demonstration purposes
-            setIsOtpVerified(true);
-            alert('OTP verified successfully!');
-        } else {
-            alert('Invalid OTP. Please try again.');
+    const handleOtpVerification = async () => {
+        try {
+            const response = await fetch('http://localhost:3000/auth/verify-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ userId, otp }),
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                alert("OTP verified successfully");
+                setIsOtpVerified(true);
+            } else {
+                alert(`Error: ${data.message}`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert("An error occurred while verifying the OTP");
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         if (forgotPassword && isOtpVerified) {
             // Handle password reset logic here
-            console.log({ userType, userId, otp, newPassword, confirmNewPassword });
-            setForgotPassword(false);
-            setPassword('');
-            setOtp('');
-            setNewPassword('');
-            setConfirmNewPassword('');
-            setIsOtpVerified(false);
+            if (newPassword !== confirmNewPassword) {
+                alert("New passwords do not match");
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/auth/reset-pass', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ userId, newPassword }),
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert("Password reset successfully");
+                    // Reset form and state
+                    setForgotPassword(false);
+                    setPassword('');
+                    setOtp('');
+                    setNewPassword('');
+                    setConfirmNewPassword('');
+                    setIsOtpVerified(false);
+                } else {
+                    alert(`Error: ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert("An error occurred while resetting the password");
+            }
         } else if (!forgotPassword) {
             try {
                 const response = await fetch('http://localhost:3000/auth/login', {
@@ -114,18 +171,21 @@ const Login = () => {
                             onChange={(e) => setPassword(e.target.value)}
                             className="w-full p-2 border border-gray-300 rounded"
                         />
-                        {userType !== 'admin' && (
+                       
                             <button
                                 type="button"
-                                onClick={() => setForgotPassword(true)}
+                                onClick={() => {
+                                    setForgotPassword(true);
+                                    handleSendOtp();
+                                }}
                                 className="text-sm text-blue-900 absolute right-0 bottom-0 mr-2 mb-1"
                             >
-                                Forgot Password
+                                Forgot Password?
                             </button>
-                        )}
+                        
                     </div>
                 )}
-                {forgotPassword && userType !== 'admin' && !isOtpVerified && (
+                {forgotPassword && !isOtpVerified && (
                     <>
                         <div className="mb-4">
                             <label htmlFor="otp" className="block text-lg mb-2">OTP:</label>
@@ -135,14 +195,12 @@ const Login = () => {
                                 value={otp}
                                 onChange={(e) => setOtp(e.target.value)}
                                 className="w-full p-2 border border-gray-300 rounded"
-                                disabled={isOtpVerified}
                             />
                         </div>
                         <button
                             type="button"
                             onClick={handleOtpVerification}
                             className="w-full bg-blue-900 text-white p-2 rounded"
-                            disabled={isOtpVerified}
                         >
                             Verify OTP
                         </button>
