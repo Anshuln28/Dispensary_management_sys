@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const ChangePassword = () => {
   const [formData, setFormData] = useState({
@@ -15,24 +16,18 @@ const ChangePassword = () => {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/auth/user-details', {
-          method: 'GET',
-          credentials: 'include',
+        const response = await axios.get('http://localhost:3000/api/auth/user-details', {
+          withCredentials: true,
         });
 
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success) {
-            setFormData((prevFormData) => ({
-              ...prevFormData,
-              userId: data.user.user_id,
-              user_type: data.user.user_type,
-            }));
-          } else {
-            console.error('Error fetching user details:', data.message);
-          }
+        if (response.data.success) {
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            userId: response.data.user.user_id,
+            user_type: response.data.user.user_type,
+          }));
         } else {
-          console.error('Failed to fetch user details. Status:', response.status);
+          console.error('Error fetching user details:', response.data.message);
         }
       } catch (error) {
         console.error('Error:', error);
@@ -52,18 +47,18 @@ const ChangePassword = () => {
 
   const handleSendOtp = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/auth/send-otp-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ userId: formData.userId, user_type :formData.user_type}),
-      });
+      const response = await axios.post('http://localhost:3000/api/auth/send-otp-email', 
+        {
+          userId: formData.userId,
+          user_type :formData.user_type,
+        }, 
+        { withCredentials: true }
+      );
 
-      const data = await response.json();
-      if (response.ok) {
+      if (response.data.success) {
         alert('OTP sent to your email.');
       } else {
-        alert(`Failed to send OTP: ${data.message}`);
+        alert(`Failed to send OTP: ${response.data.message}`);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -73,19 +68,19 @@ const ChangePassword = () => {
 
   const handleOtpVerification = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/auth/verify-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ userId: formData.userId, otp: formData.otp }),
-      });
+      const response = await axios.post('http://localhost:3000/api/auth/verify-otp', 
+        {
+          userId: formData.userId,
+          otp: formData.otp,
+        }, 
+        { withCredentials: true }
+      );
 
-      const data = await response.json();
-      if (data.success) {
+      if (response.data.success) {
         alert("OTP verified successfully");
         setOtpVerified(true);
       } else {
-        alert(`Error: ${data.message}`);
+        alert(`Error: ${response.data.message}`);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -121,15 +116,9 @@ const ChangePassword = () => {
         };
       }
 
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(payload),
-      });
+      const response = await axios.post(endpoint, payload, { withCredentials: true });
 
-      const data = await response.json();
-      if (data.success) {
+      if (response.data.success) {
         alert("Password changed successfully");
         setFormData({
           userId: formData.userId,
@@ -141,7 +130,7 @@ const ChangePassword = () => {
         setShowForgotPassword(false);
         setOtpVerified(false);
       } else {
-        alert(`Error: ${data.message}`);
+        alert(`Error: ${response.data.message}`);
       }
     } catch (error) {
       console.error('Error:', error);

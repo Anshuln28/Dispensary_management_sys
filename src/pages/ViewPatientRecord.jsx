@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const ViewPatientRecord = () => {
     const [userType, setUserType] = useState('');
@@ -9,13 +10,8 @@ const ViewPatientRecord = () => {
 
     const handleFetchDependents = async () => {
         try {
-            const response = await fetch(`/api/dependents/${userId}`);
-            if (response.ok) {
-                const data = await response.json();
-                setDependents(data); // Assuming data is an array of dependents
-            } else {
-                console.error('Failed to fetch dependents');
-            }
+            const response = await axios.get(`/api/dependents/${userId}`);
+            setDependents(response.data); // Assuming response.data is an array of dependents
         } catch (error) {
             console.error('Error fetching dependents:', error);
         }
@@ -24,13 +20,8 @@ const ViewPatientRecord = () => {
     const handleSearch = async () => {
         const idToSearch = userType === 'dependent' ? selectedDependent : userId;
         try {
-            const response = await fetch(`/api/patient-records/${userType}/${idToSearch}`);
-            if (response.ok) {
-                const data = await response.json();
-                setPatientRecords(data); // Assuming data structure includes visits and prescriptions
-            } else {
-                console.error('Failed to fetch patient records');
-            }
+            const response = await axios.get(`/api/patient-records/${userType}/${idToSearch}`);
+            setPatientRecords(response.data); // Assuming response.data structure includes visits and prescriptions
         } catch (error) {
             console.error('Error fetching patient records:', error);
         }
@@ -64,7 +55,9 @@ const ViewPatientRecord = () => {
             {userType && (
                 <>
                     <div className="mb-4">
-                        <label htmlFor="userId" className="block text-lg mb-2">{userType === 'dependent' ? 'Enter Employee ID:' : 'Enter User ID:'}</label>
+                        <label htmlFor="userId" className="block text-lg mb-2">
+                            {userType === 'dependent' ? 'Enter Employee ID:' : 'Enter User ID:'}
+                        </label>
                         <input
                             type="text"
                             id="userId"
@@ -113,7 +106,6 @@ const ViewPatientRecord = () => {
                             <p><strong>Clinical Findings:</strong> {record.clinicalFindings}</p>
                             <p><strong>Advice:</strong> {record.advice}</p>
                             <p><strong>Prescription:</strong> {record.prescription}</p>
-                            {/* Add more details as per your data structure */}
                         </div>
                     ))}
                 </div>

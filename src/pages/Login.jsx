@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import axios from 'axios';
 
 const Login = () => {
     const [userType, setUserType] = useState('');
@@ -15,54 +16,47 @@ const Login = () => {
     const navigate = useNavigate();
 
     const handleUserTypeChange = (e) => {
-        const selectedUserType = e.target.value;
-        setUserType(selectedUserType);
-
-        // if (selectedUserType === 'admin') {
-        //     setForgotPassword(false);
-        // }
+        setUserType(e.target.value);
     };
 
     const handleSendOtp = async () => {
         try {
-            const response = await fetch('http://localhost:3000/api/auth/send-otp-email', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify({ userId, user_type: userType  }),
-            });
+            const response = await axios.post('http://localhost:3000/api/auth/send-otp-email', 
+            {
+                userId,
+                user_type: userType,
+            }, 
+            { withCredentials: true });
 
-            if (response.ok) {
+            if (response.status === 200) {
                 alert('OTP sent to your email.');
-            } else {
-                const data = await response.json();
-                alert(`Failed to send OTP: ${data.message}`);
             }
         } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred while sending the OTP.');
+            const errorMessage = error.response?.data?.message || 'An error occurred while sending the OTP.';
+            alert(errorMessage);
+            console.error('Error:', errorMessage);
         }
     };
 
     const handleOtpVerification = async () => {
         try {
-            const response = await fetch('http://localhost:3000/api/auth/verify-otp', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify({ userId, otp }),
-            });
+            const response = await axios.post('http://localhost:3000/api/auth/verify-otp', 
+            {
+                userId,
+                otp,
+            }, 
+            { withCredentials: true });
 
-            const data = await response.json();
-            if (data.success) {
+            if (response.data.success) {
                 alert("OTP verified successfully");
                 setIsOtpVerified(true);
             } else {
-                alert(`Error: ${data.message}`);
+                alert(`Error: ${response.data.message}`);
             }
         } catch (error) {
-            console.error('Error:', error);
-            alert("An error occurred while verifying the OTP");
+            const errorMessage = error.response?.data?.message || 'An error occurred while verifying the OTP.';
+            alert(errorMessage);
+            console.error('Error:', errorMessage);
         }
     };
 
@@ -70,24 +64,21 @@ const Login = () => {
         e.preventDefault();
 
         if (forgotPassword && isOtpVerified) {
-            // Handle password reset logic here
             if (newPassword !== confirmNewPassword) {
                 alert("New passwords do not match");
                 return;
             }
 
             try {
-                const response = await fetch('http://localhost:3000/api/auth/reset-pass', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
-                    body: JSON.stringify({ userId, newPassword }),
-                });
+                const response = await axios.post('http://localhost:3000/api/auth/reset-pass', 
+                {
+                    userId,
+                    newPassword,
+                }, 
+                { withCredentials: true });
 
-                const data = await response.json();
-                if (data.success) {
+                if (response.data.success) {
                     alert("Password reset successfully");
-                    // Reset form and state
                     setForgotPassword(false);
                     setPassword('');
                     setOtp('');
@@ -95,39 +86,45 @@ const Login = () => {
                     setConfirmNewPassword('');
                     setIsOtpVerified(false);
                 } else {
-                    alert(`Error: ${data.message}`);
+                    alert(`Error: ${response.data.message}`);
                 }
             } catch (error) {
-                console.error('Error:', error);
-                alert("An error occurred while resetting the password");
+                const errorMessage = error.response?.data?.message || 'An error occurred while resetting the password.';
+                alert(errorMessage);
+                console.error('Error:', errorMessage);
             }
         } else if (!forgotPassword) {
             try {
-                const response = await fetch('http://localhost:3000/api/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
-                    body: JSON.stringify({ user_id: userId, password, user_type: userType }),
-                });
+                const response = await axios.post('http://localhost:3000/api/auth/login', 
+                {
+                    user_id: userId,
+                    password,
+                    user_type: userType,
+                }, 
+                { withCredentials: true });
 
-                const data = await response.json();
-
-                if (data.success) {
-                    const userData = { userType: data.userType, userId, token: data.token };
+                if (response.data.success) {
+                    const userData = {
+                        userType: response.data.userType,
+                        userId,
+                        token: response.data.token,
+                    };
                     login(userData);
 
-                    if (data.userType === 'admin') {
+                    if (response.data.userType === 'admin') {
                         navigate('/admin');
-                    } else if (data.userType === 'doctor') {
+                    } else if (response.data.userType === 'doctor') {
                         navigate('/doctor');
-                    } else if (data.userType === 'staff') {
+                    } else if (response.data.userType === 'staff') {
                         navigate('/staff');
                     }
                 } else {
-                    console.log('Login failed:', data.message);
+                    console.log('Login failed:', response.data.message);
                 }
             } catch (error) {
-                console.error('Error:', error);
+                const errorMessage = error.response?.data?.message || 'An error occurred during login.';
+                alert(errorMessage);
+                console.error('Error:', errorMessage);
             }
         }
     };
@@ -171,18 +168,16 @@ const Login = () => {
                             onChange={(e) => setPassword(e.target.value)}
                             className="w-full p-2 border border-gray-300 rounded"
                         />
-                       
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setForgotPassword(true);
-                                    handleSendOtp();
-                                }}
-                                className="text-sm text-blue-900 absolute right-0 bottom-0 mr-2 mb-1"
-                            >
-                                Forgot Password?
-                            </button>
-                        
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setForgotPassword(true);
+                                handleSendOtp();
+                            }}
+                            className="text-sm text-blue-900 absolute right-0 bottom-0 mr-2 mb-1"
+                        >
+                            Forgot Password?
+                        </button>
                     </div>
                 )}
                 {forgotPassword && !isOtpVerified && (
