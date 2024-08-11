@@ -60,14 +60,7 @@ const NewAppointment = () => {
         user_id: formData.id,
         user_type: appointmentType,
       };
-      console.log(data);
-      const response = await axios.post(
-        "http://localhost:3000/api/staff/getinformation",
-        {
-          user_id: formData.id,
-          user_type: appointmentType,
-        }
-      );
+      const response = await axios.post("/api/staff/getinformation", data);
 
       if (response.status === 200) {
         const data = response.data;
@@ -97,7 +90,7 @@ const NewAppointment = () => {
   const handleFetchDependents = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/staff/getdependents/${formData.id}`
+        `/api/staff/getdependents/${formData.id}`
       );
       if (response.status === 200) {
         setDependents(response.data.dependents);
@@ -152,11 +145,9 @@ const NewAppointment = () => {
       spo2: formData.spo2,
     };
 
-    axios
-      .put("http://localhost:3000/api/staff/update", data)
-      .then((response) => {
-        console.log("Medicine added successfully:", response.data);
-      });
+    axios.put("/api/staff/update", data).then((response) => {
+      console.log("Medicine added successfully:", response.data);
+    });
   };
 
   const handleSubmit = (e) => {
@@ -173,7 +164,7 @@ const NewAppointment = () => {
       user_id: formData.userId,
       purpose: formData.reasonForVisit,
     };
-    axios.post("http://localhost:3000/api/v1/user/prescription", data);
+    axios.post("/api/v1/user/prescription", data);
     console.log("im done");
     setAppointmentType("");
   };

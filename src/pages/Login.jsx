@@ -4,16 +4,16 @@ import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 
 const Login = () => {
-    const [userType, setUserType] = useState('');
-    const [userId, setUserId] = useState('');
-    const [password, setPassword] = useState('');
-    const [forgotPassword, setForgotPassword] = useState(false);
-    const [otp, setOtp] = useState('');
-    const [isOtpVerified, setIsOtpVerified] = useState(false);
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmNewPassword, setConfirmNewPassword] = useState('');
-    const { login } = useAuth();
-    const navigate = useNavigate();
+  const [userType, setUserType] = useState("");
+  const [userId, setUserId] = useState("");
+  const [password, setPassword] = useState("");
+  const [forgotPassword, setForgotPassword] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [isOtpVerified, setIsOtpVerified] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
     const handleUserTypeChange = (e) => {
         setUserType(e.target.value);
