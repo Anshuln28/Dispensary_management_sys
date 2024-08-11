@@ -167,6 +167,17 @@ const NewAppointment = () => {
     setEditVitals(false);
   };
 
+  const handlesubmit = (e) => {
+    e.preventDefault();
+    const data = {
+      user_id: formData.userId,
+      purpose: formData.reasonForVisit,
+    };
+    axios.post("http://localhost:3000/api/v1/user/prescription", data);
+    console.log("im done");
+    setAppointmentType("");
+  };
+
   return (
     <main className="p-8 font-medium">
       <h2 className="text-3xl mb-4 text-center font-semibold">
@@ -520,6 +531,7 @@ const NewAppointment = () => {
                 </div>
                 <button
                   type="submit"
+                  onClick={handlesubmit}
                   className="w-full bg-green-500 text-white p-2 rounded mt-4"
                 >
                   Submit
