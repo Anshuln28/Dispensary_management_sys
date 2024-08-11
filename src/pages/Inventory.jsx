@@ -11,7 +11,7 @@ const Inventory = () => {
     setShowInventory(!showInventory);
     try {
       const response = await axios.get(
-        "http://localhost:3000/api/staff/getstock"
+        "/api/staff/getstock"
       ); // Adjust the endpoint according to your API
       if (response.status === 200) {
         const data = response.data; // axios automatically parses JSON

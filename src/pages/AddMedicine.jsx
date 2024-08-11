@@ -23,7 +23,7 @@ const AddMedicine = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Use Axios to send a POST request
-    console.log(formData)
+    console.log(formData);
     const data = {
       M_name: formData.M_name,
       batch_no: formData.batch_no,
@@ -35,7 +35,7 @@ const AddMedicine = () => {
     };
 
     axios
-      .post("http://localhost:3000/api/staff/stock_entry", data)
+      .post("/api/staff/stock_entry", data)
       .then((response) => {
         console.log("Medicine added successfully:", response.data);
 
