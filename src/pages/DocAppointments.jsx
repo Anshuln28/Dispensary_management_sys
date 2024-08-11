@@ -33,7 +33,7 @@ const DocAppointments = () => {
     event.preventDefault();
 
     try {
-      const response = await axios.get("http://localhost:3000/api/doc/queue");
+      const response = await axios.get("/api/doc/queue");
 
       // Check if the response status is 200 (OK)
       if (response.status === 200) {
@@ -89,7 +89,6 @@ const DocAppointments = () => {
               <tr>
                 <th className="px-4 py-2 border-b">User ID</th>
                 <th className="px-4 py-2 border-b">Name</th>
-                <th className="px-4 py-2 border-b">Relation</th>
                 <th className="px-4 py-2 border-b">Status</th>
                 <th className="px-4 py-2 border-b">Action</th>
               </tr>
