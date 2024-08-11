@@ -15,7 +15,7 @@ const ChangePassword = () => {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const response = await fetch('http://localhost:3000/auth/user-details', {
+        const response = await fetch('http://localhost:3000/api/auth/user-details', {
           method: 'GET',
           credentials: 'include',
         });
@@ -52,7 +52,7 @@ const ChangePassword = () => {
 
   const handleSendOtp = async () => {
     try {
-      const response = await fetch('http://localhost:3000/auth/send-otp-email', {
+      const response = await fetch('http://localhost:3000/api/auth/send-otp-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -73,7 +73,7 @@ const ChangePassword = () => {
 
   const handleOtpVerification = async () => {
     try {
-      const response = await fetch('http://localhost:3000/auth/verify-otp', {
+      const response = await fetch('http://localhost:3000/api/auth/verify-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -106,7 +106,7 @@ const ChangePassword = () => {
 
       if (!showForgotPassword) {
         // If the user is changing the password with the old password
-        endpoint = 'http://localhost:3000/auth/change-password';
+        endpoint = 'http://localhost:3000/api/auth/change-password';
         payload = {
           userId: formData.userId,
           oldPassword: formData.oldPassword,
@@ -114,7 +114,7 @@ const ChangePassword = () => {
         };
       } else if (otpVerified) {
         // If the user is resetting the password after OTP verification
-        endpoint = 'http://localhost:3000/auth/reset-pass';
+        endpoint = 'http://localhost:3000/api/auth/reset-pass';
         payload = {
           userId: formData.userId,
           newPassword: formData.newPassword,

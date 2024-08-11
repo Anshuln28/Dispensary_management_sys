@@ -25,7 +25,7 @@ const Login = () => {
 
     const handleSendOtp = async () => {
         try {
-            const response = await fetch('http://localhost:3000/auth/send-otp-email', {
+            const response = await fetch('http://localhost:3000/api/auth/send-otp-email', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -46,7 +46,7 @@ const Login = () => {
 
     const handleOtpVerification = async () => {
         try {
-            const response = await fetch('http://localhost:3000/auth/verify-otp', {
+            const response = await fetch('http://localhost:3000/api/auth/verify-otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -77,7 +77,7 @@ const Login = () => {
             }
 
             try {
-                const response = await fetch('http://localhost:3000/auth/reset-pass', {
+                const response = await fetch('http://localhost:3000/api/auth/reset-pass', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
@@ -103,7 +103,7 @@ const Login = () => {
             }
         } else if (!forgotPassword) {
             try {
-                const response = await fetch('http://localhost:3000/auth/login', {
+                const response = await fetch('http://localhost:3000/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
