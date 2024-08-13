@@ -10,7 +10,7 @@ import Footer from './components/Footer';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import PublicRoute from './components/PublicRoute';
-
+import Team from './pages/Team';  // Import the Team component
 const App = () => {
   return (
     <AuthProvider>
@@ -41,6 +41,7 @@ const App = () => {
                   <Staff />
                 </ProtectedRoute>
               } />
+              <Route path="/team" element={<Team />} /> {/* Add this line */}
             </Routes>
           </main>
           <Footer />
