@@ -9,6 +9,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import PublicRoute from './components/PublicRoute';
 
 const App = () => {
   return (
@@ -19,7 +20,12 @@ const App = () => {
           <main className="flex-grow">
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
+             
+              <Route path="/login" element={
+                <PublicRoute>
+                    <Login />
+                </PublicRoute>
+              } />
               <Route path="/admin/*" element={
                 <ProtectedRoute allowedRoles={['admin']}>
                   <Admin />

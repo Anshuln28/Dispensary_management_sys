@@ -15,6 +15,7 @@ import ChangePassword from './ChangePassword';
 import ConsultedAppointments from './ConsultedAppointments';
 const Admin = () => {
     return (
+        <main className="">
         <div className="flex h-screen overflow-hidden">
             {/* Sidebar */}
             <aside className="w-64 bg-gray-100 shadow-lg overflow-y-auto">
@@ -103,6 +104,7 @@ const Admin = () => {
                 </Routes>
             </section>
         </div>
+        </main>
     );
 };
 
