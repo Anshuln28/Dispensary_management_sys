@@ -12,6 +12,11 @@ import ViewPrescriptionForm from "./ViewPrescriptionForm";
 const Staff = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const handleSidebarToggle = () => {
+    setSidebarOpen(!sidebarOpen);
+    console.log('Sidebar state:', !sidebarOpen); // Debug log
+  };
+
   return (
     <main className="h-screen flex overflow-hidden">
       {/* Sidebar */}
@@ -84,7 +89,7 @@ const Staff = () => {
         {/* 3 Dot Menu for Mobile */}
         <button
           className="lg:hidden text-gray-600 mb-4 focus:outline-none"
-          onClick={() => setSidebarOpen(!sidebarOpen)}
+          onClick={handleSidebarToggle}
         >
           <FaBars size={24} />
         </button>

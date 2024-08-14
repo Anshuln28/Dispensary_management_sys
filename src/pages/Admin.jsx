@@ -33,6 +33,7 @@ const Admin = () => {
               <Link
                 to="add-new-admin"
                 className="block py-2 px-4 rounded-lg hover:bg-gray-200"
+                onClick={() => setSidebarOpen(false)}
               >
                 Add New Admin
               </Link>
@@ -41,6 +42,7 @@ const Admin = () => {
               <Link
                 to="remove-admin-staff-doctor"
                 className="block py-2 px-4 rounded-lg hover:bg-gray-200"
+                onClick={() => setSidebarOpen(false)}
               >
                 Remove Admin/Staff
               </Link>
@@ -49,6 +51,7 @@ const Admin = () => {
               <Link
                 to="add-staff-doctor"
                 className="block py-2 px-4 rounded-lg hover:bg-gray-200"
+                onClick={() => setSidebarOpen(false)}
               >
                 Add Staff/Doctor
               </Link>
@@ -57,6 +60,7 @@ const Admin = () => {
               <Link
                 to="view-patient-record"
                 className="block py-2 px-4 rounded-lg hover:bg-gray-200"
+                onClick={() => setSidebarOpen(false)}
               >
                 View Patient Records
               </Link>
@@ -65,6 +69,7 @@ const Admin = () => {
               <Link
                 to="new-appointment"
                 className="block py-2 px-4 rounded-lg hover:bg-gray-200"
+                onClick={() => setSidebarOpen(false)}
               >
                 New Appointment
               </Link>
@@ -73,6 +78,7 @@ const Admin = () => {
               <Link
                 to="doc-appointments"
                 className="block py-2 px-4 rounded-lg hover:bg-gray-200"
+                onClick={() => setSidebarOpen(false)}
               >
                 Doctor Appointments
               </Link>
@@ -81,6 +87,7 @@ const Admin = () => {
               <Link
                 to="consulted-appointments"
                 className="block py-2 px-4 rounded-lg hover:bg-gray-200"
+                onClick={() => setSidebarOpen(false)}
               >
                 Consulted Appointments
               </Link>
@@ -89,6 +96,7 @@ const Admin = () => {
               <Link
                 to="inventory"
                 className="block py-2 px-4 rounded-lg hover:bg-gray-200"
+                onClick={() => setSidebarOpen(false)}
               >
                 View Inventory
               </Link>
@@ -97,6 +105,7 @@ const Admin = () => {
               <Link
                 to="add-medicine"
                 className="block py-2 px-4 rounded-lg hover:bg-gray-200"
+                onClick={() => setSidebarOpen(false)}
               >
                 Add Medicine to Inventory
               </Link>
@@ -105,6 +114,7 @@ const Admin = () => {
               <Link
                 to="deduct-medicine"
                 className="block py-2 px-4 rounded-lg hover:bg-gray-200"
+                onClick={() => setSidebarOpen(false)}
               >
                 Deduct Medicine from Inventory
               </Link>
@@ -113,6 +123,7 @@ const Admin = () => {
               <Link
                 to="change-password"
                 className="block py-2 px-4 rounded-lg hover:bg-gray-200"
+                onClick={() => setSidebarOpen(false)}
               >
                 Change Password
               </Link>

@@ -10,7 +10,8 @@ import Footer from './components/Footer';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import PublicRoute from './components/PublicRoute';
-import Team from './pages/Team';  // Import the Team component
+import Team from './pages/Team';
+
 const App = () => {
   return (
     <AuthProvider>
@@ -20,7 +21,6 @@ const App = () => {
           <main className="flex-grow">
             <Routes>
               <Route path="/" element={<Home />} />
-             
               <Route path="/login" element={
                 <PublicRoute>
                     <Login />
@@ -41,7 +41,7 @@ const App = () => {
                   <Staff />
                 </ProtectedRoute>
               } />
-              <Route path="/team" element={<Team />} /> {/* Add this line */}
+              <Route path="/team" element={<Team />} />
             </Routes>
           </main>
           <Footer />

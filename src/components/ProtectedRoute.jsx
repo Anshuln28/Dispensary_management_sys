@@ -9,6 +9,8 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
         return <div>Loading...</div>; // Or any other loading indicator
     }
 
+    console.log('Authenticated:', isAuthenticated, 'User:', user); // Debug log
+
     if (!isAuthenticated) {
         return <Navigate to="/login" />;
     }

@@ -3,8 +3,8 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const PublicRoute = ({ children }) => {
-    const { isAuthenticated, user } = useAuth();
-    
+    const { isAuthenticated } = useAuth();
+
     if (isAuthenticated) {
         return <Navigate to="/" />; // Redirect to the homepage or another protected page if already logged in
     }

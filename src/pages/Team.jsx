@@ -16,10 +16,10 @@ const Team = () => {
           </div>
           <div className="grid gap-10 mx-auto sm:grid-cols-2 lg:grid-cols-4 lg:max-w-screen-lg">
             <div>
-              <div className="relative pb-56 mb-4 rounded shadow lg:pb-64">
+              <div className="relative pb-56 mb-4 rounded shadow lg:pb-64 overflow-hidden">
                 <img
-                  className="absolute object-cover w-full h-full rounded"
-                  src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=3&amp;h=750&amp;w=1260"
+                  className="absolute object-cover w-full h-full rounded transition-all hover:scale-110"
+                  src="vinay.jpeg"
                   alt="Person"
                 />
               </div>
@@ -57,16 +57,16 @@ const Team = () => {
               </div>
             </div>
             <div>
-              <div className="relative pb-56 mb-4 rounded shadow lg:pb-64">
+              <div className="relative pb-56 mb-4 rounded shadow lg:pb-64 overflow-hidden">
                 <img
-                  className="absolute object-cover w-full h-full rounded"
-                  src="https://images.pexels.com/photos/2381069/pexels-photo-2381069.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=750&amp;w=1260"
+                  className="absolute object-cover w-full h-full rounded transition-all hover:scale-110"
+                  src="vinay.jpeg"
                   alt="Person"
                 />
               </div>
               <div className="flex flex-col sm:text-center">
-                <p className="text-lg font-bold">Marta Clermont</p>
-                <p className="mb-5 text-xs text-gray-800">Design Team Lead</p>
+                <p className="text-lg font-bold">Anshul Namdev</p>
+                <p className="mb-5 text-xs text-gray-800">Full Stack Developer</p>
                 <div className="flex items-center space-x-3 sm:justify-center">
                   <a
                     href="https://www.instagram.com/vinaygupta017/"
@@ -96,16 +96,16 @@ const Team = () => {
               </div>
             </div>
             <div>
-              <div className="relative pb-56 mb-4 rounded shadow lg:pb-64">
+              <div className="relative pb-56 mb-4 rounded shadow lg:pb-64 overflow-hidden">
                 <img
-                  className="absolute object-cover w-full h-full rounded"
-                  src="https://images.pexels.com/photos/3747435/pexels-photo-3747435.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=750&amp;w=1260"
+                  className="absolute object-cover w-full h-full rounded transition-all hover:scale-110"
+                  src="vinay.jpeg"
                   alt="Person"
                 />
               </div>
               <div className="flex flex-col sm:text-center">
-                <p className="text-lg font-bold">Alice Melbourne</p>
-                <p className="mb-5 text-xs text-gray-800">Human Resources</p>
+                <p className="text-lg font-bold">Sachin Kumar</p>
+                <p className="mb-5 text-xs text-gray-800">Full Stack Developer</p>
                 <div className="flex items-center space-x-3 sm:justify-center">
                   <a
                     href="https://www.instagram.com/vinaygupta017/"
@@ -135,16 +135,16 @@ const Team = () => {
               </div>
             </div>
             <div>
-              <div className="relative pb-56 mb-4 rounded shadow lg:pb-64">
+              <div className="relative pb-56 mb-4 rounded shadow lg:pb-64 overflow-hidden">
                 <img
-                  className="absolute object-cover w-full h-full rounded"
-                  src="https://images.pexels.com/photos/3931603/pexels-photo-3931603.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=750&amp;w=1260"
+                  className="absolute object-cover w-full h-full rounded transition-all hover:scale-110"
+                  src="vinay.jpeg"
                   alt="Person"
                 />
               </div>
               <div className="flex flex-col sm:text-center">
-                <p className="text-lg font-bold">John Doe</p>
-                <p className="mb-5 text-xs text-gray-800">Good guy</p>
+                <p className="text-lg font-bold">Vipin Pal</p>
+                <p className="mb-5 text-xs text-gray-800">Full Stack Developer</p>
                 <div className="flex items-center space-x-3 sm:justify-center">
                   <a
                     href="https://www.instagram.com/vinaygupta017/"

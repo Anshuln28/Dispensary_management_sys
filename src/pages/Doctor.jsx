@@ -29,6 +29,7 @@ const Doctor = () => {
               <Link
                 to="view-patient-record"
                 className="block py-2 px-4 rounded-lg hover:bg-gray-200"
+                onClick={() => setSidebarOpen(false)}
               >
                 View Patient Records
               </Link>
@@ -37,6 +38,7 @@ const Doctor = () => {
               <Link
                 to="new-appointment"
                 className="block py-2 px-4 rounded-lg hover:bg-gray-200"
+                onClick={() => setSidebarOpen(false)}
               >
                 New Appointment
               </Link>
@@ -45,6 +47,7 @@ const Doctor = () => {
               <Link
                 to="doc-appointments"
                 className="block py-2 px-4 rounded-lg hover:bg-gray-200"
+                onClick={() => setSidebarOpen(false)}
               >
                 Doctor Appointments
               </Link>
@@ -53,6 +56,7 @@ const Doctor = () => {
               <Link
                 to="inventory"
                 className="block py-2 px-4 rounded-lg hover:bg-gray-200"
+                onClick={() => setSidebarOpen(false)}
               >
                 View Inventory
               </Link>
@@ -61,6 +65,7 @@ const Doctor = () => {
               <Link
                 to="change-password"
                 className="block py-2 px-4 rounded-lg hover:bg-gray-200"
+                onClick={() => setSidebarOpen(false)}
               >
                 Change Password
               </Link>
