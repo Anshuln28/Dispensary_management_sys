@@ -5,42 +5,25 @@ import axios from "axios";
 
 const DocAppointments = () => {
   const [appointments, setAppointments] = useState([]);
-  const [filter, setFilter] = useState("all");
+  const [showAppointments, setShowAppointments] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  const handleFilterChange = (e) => {
-    setFilter(e.target.value);
-  };
-
   const handleProceedClick = (appointment) => {
     const rolePath = user.userType === "doctor" ? "/doctor" : "/admin";
-    if (appointment.status === "consulted") {
-      navigate(`${rolePath}/view-prescription-form`, {
-        state: { form: appointment.form, userRole: user.userType },
-      });
-    } else {
-      navigate(`${rolePath}/consulted-appointments`, { state: appointment });
-    }
+    navigate(`${rolePath}/consulted-appointments`, { state: appointment });
   };
 
-  //   const filteredAppointments = appointments.filter((appointment) => {
-  //     if (filter === "all") return true;
-  //     return appointment.status === filter;
-  //   });
-
-  const handleAppointment = async (event) => {
-    event.preventDefault();
-
+  const fetchAppointments = async () => {
     try {
       const response = await axios.get("/api/doc/queue");
 
-      // Check if the response status is 200 (OK)
       if (response.status === 200) {
-        setAppointments(response.data);
-
-        console.log("Appointment data retrieved successfully:", response.data);
-        // Process the data as needed, for example:
+        const toBeConsulted = response.data.filter(
+          (appointment) => appointment.status === "to be consulted"
+        );
+        setAppointments(toBeConsulted);
+        console.log("To be consulted appointments retrieved:", toBeConsulted);
       } else {
         console.error(
           "Failed to retrieve appointment data. Status:",
@@ -55,35 +38,37 @@ const DocAppointments = () => {
     }
   };
 
+  const handleShowHideAppointments = () => {
+    if (showAppointments) {
+      setAppointments([]);
+    } else {
+      fetchAppointments();
+    }
+    setShowAppointments(!showAppointments);
+  };
+
   useEffect(() => {
     console.log("Current appointments:", appointments.length);
   }, [appointments]);
+
+  useEffect(() => {
+    let interval;
+    if (showAppointments) {
+      interval = setInterval(() => {
+        fetchAppointments();
+      }, 600000); // 10 minutes in milliseconds
+    }
+    return () => clearInterval(interval);
+  }, [showAppointments]);
 
   return (
     <main className="p-8 font-medium mx-auto max-w-5xl">
       <h2 className="text-3xl mb-4 text-center font-semibold">
         Doctor Appointments
       </h2>
-      <button className="bg-blue-700" onClick={handleAppointment}>
-        Show Appointment
-      </button>
-      <div className="mb-4">
-        <label htmlFor="filter" className="block text-lg mb-2">
-          Filter:
-        </label>
-        <select
-          id="filter"
-          value={filter}
-          onChange={handleFilterChange}
-          className="w-full p-2 border border-gray-300 rounded"
-        >
-          <option value="all">All</option>
-          <option value="to be consulted">To be consulted</option>
-          <option value="consulted">Consulted</option>
-        </select>
-      </div>
-      {appointments.length > 0 ? (
-        <div className="overflow-x-auto">
+      
+      {showAppointments && (
+        <div className="overflow-x-auto mb-4">
           <table className="min-w-full bg-white border border-gray-300">
             <thead>
               <tr>
@@ -94,36 +79,55 @@ const DocAppointments = () => {
               </tr>
             </thead>
             <tbody>
-              {appointments?.map((appointment, index) => (
-                <tr key={index}>
-                  <td className="px-4 py-2 border-b">
-                    {appointment.user_id.user_id}
-                  </td>
-                  <td className="px-4 py-2 border-b">
-                    {appointment.user_id.name}
-                  </td>
-
-                  <td className="px-4 py-2 border-b">{appointment.status}</td>
-                  <td className="px-4 py-2 border-b">
-                    <button
-                      onClick={() => handleProceedClick(appointment)}
-                      className="bg-blue-900 text-white px-4 py-2 rounded"
-                    >
-                      {appointment.status === "consulted"
-                        ? "View Prescription"
-                        : "Proceed"}
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {appointments.length > 0 ? (
+                appointments.map((appointment, index) => (
+                  <tr key={index}>
+                    <td className="px-4 py-2 border-b">
+                      {appointment.user_id.user_id}
+                    </td>
+                    <td className="px-4 py-2 border-b">
+                      {appointment.user_id.name}
+                    </td>
+                    <td className="px-4 py-2 border-b">{appointment.status}</td>
+                    <td className="px-4 py-2 border-b">
+                      <button
+                        onClick={() => handleProceedClick(appointment)}
+                        className="bg-blue-900 text-white px-4 py-2 rounded"
+                      >
+                        Proceed
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : null}
             </tbody>
           </table>
         </div>
-      ) : (
-        <p className="text-center mt-8 text-lg">
-          There are no appointments as of now.
-        </p>
       )}
+
+      {showAppointments && appointments.length === 0 && (
+        <div className="text-center py-4">
+          There are no appointments to be consulted.
+        </div>
+      )}
+
+      <div className="flex justify-center">
+        <button
+          className="text-white px-4 py-2 rounded mr-4"
+          style={{ backgroundColor: "#274187" }}
+          onClick={handleShowHideAppointments}
+        >
+          {showAppointments ? "Hide Appointments" : "Show Appointments"}
+        </button>
+        {showAppointments && (
+          <button
+            className="bg-green-700 text-white px-4 py-2 rounded"
+            onClick={fetchAppointments}
+          >
+            Refresh
+          </button>
+        )}
+      </div>
     </main>
   );
 };
