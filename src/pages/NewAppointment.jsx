@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const NewAppointment = () => {
@@ -89,11 +89,16 @@ const NewAppointment = () => {
 
   const handleFetchDependents = async () => {
     try {
-      const response = await axios.get(
-        `/api/staff/getdependents/${formData.id}`
-      );
+      const data = {
+        user_id: formData.id,
+      };
+      console.log(data);
+      const response = await axios.post("/api/staff/dependentinfo", data);
       if (response.status === 200) {
-        setDependents(response.data.dependents);
+        console.log(response.data.dep);
+        setDependents(response.data.dep);
+
+        console.log(dependents);
       } else {
         console.error("Failed to fetch dependents");
       }
@@ -101,6 +106,9 @@ const NewAppointment = () => {
       console.error("Error fetching dependents:", error);
     }
   };
+  useEffect(() => {
+    console.log("Current appointments:", dependents.length);
+  }, [dependents]);
 
   const handleDependentChange = (e) => {
     const value = e.target.value;
@@ -109,20 +117,19 @@ const NewAppointment = () => {
       resetFormData();
     } else {
       setNewDependent(false);
-      const dependent = dependents.find((dep) => dep.id === value);
+      const dependent = dependents.find((dep) => dep._id === value);
       setFormData((prevFormData) => ({
         ...prevFormData,
         name: dependent.name,
-        dob: dependent.dob,
-        gender: dependent.gender,
-        contactNo: dependent.contactNo,
-        userId: dependent.userId,
-        height: dependent.height || "",
-        weight: dependent.weight || "",
-        bodyTemperature: dependent.bodyTemperature || "",
-        bloodPressure: dependent.bloodPressure || "",
-        bloodGroup: dependent.bloodGroup || "",
-        spo2: dependent.spo2 || "",
+        dob: dependent.DOB,
+        userId: formData.id,
+        relationship: dependent.relation,
+        height: dependent.vitals.height || "",
+        weight: dependent.vitals.weight || "",
+        bodyTemperature: dependent.vitals.body_temp || "",
+        bloodPressure: dependent.vitals.bp || "",
+        bloodGroup: dependent.bp || "",
+        spo2: dependent.vitals.spo2 || "",
       }));
     }
     setSelectedDependent(value);
@@ -239,8 +246,8 @@ const NewAppointment = () => {
                       className="w-full p-2 border border-gray-300 rounded"
                     >
                       <option value="">Select Dependent</option>
-                      {dependents.map((dependent) => (
-                        <option key={dependent.id} value={dependent.id}>
+                      {dependents.map((dependent, index) => (
+                        <option key={index} value={dependent._id}>
                           {dependent.name}
                         </option>
                       ))}
