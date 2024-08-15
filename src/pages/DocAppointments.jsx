@@ -17,13 +17,10 @@ const DocAppointments = () => {
   const fetchAppointments = async () => {
     try {
       const response = await axios.get("/api/doc/queue");
+      console.log(response.data);
 
       if (response.status === 200) {
-        const toBeConsulted = response.data.filter(
-          (appointment) => appointment.status === "to be consulted"
-        );
-        setAppointments(toBeConsulted);
-        console.log("To be consulted appointments retrieved:", toBeConsulted);
+        setAppointments(response.data);
       } else {
         console.error(
           "Failed to retrieve appointment data. Status:",
@@ -66,7 +63,7 @@ const DocAppointments = () => {
       <h2 className="text-3xl mb-4 text-center font-semibold">
         Doctor Appointments
       </h2>
-      
+
       {showAppointments && (
         <div className="overflow-x-auto mb-4">
           <table className="min-w-full bg-white border border-gray-300">
@@ -79,27 +76,29 @@ const DocAppointments = () => {
               </tr>
             </thead>
             <tbody>
-              {appointments.length > 0 ? (
-                appointments.map((appointment, index) => (
-                  <tr key={index}>
-                    <td className="px-4 py-2 border-b">
-                      {appointment.user_id.user_id}
-                    </td>
-                    <td className="px-4 py-2 border-b">
-                      {appointment.user_id.name}
-                    </td>
-                    <td className="px-4 py-2 border-b">{appointment.status}</td>
-                    <td className="px-4 py-2 border-b">
-                      <button
-                        onClick={() => handleProceedClick(appointment)}
-                        className="bg-blue-900 text-white px-4 py-2 rounded"
-                      >
-                        Proceed
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : null}
+              {appointments.length > 0
+                ? appointments.map((appointment, index) => (
+                    <tr key={index}>
+                      <td className="px-4 py-2 border-b">
+                        {appointment.user_id.user_id}
+                      </td>
+                      <td className="px-4 py-2 border-b">
+                        {appointment.user_id.name}
+                      </td>
+                      <td className="px-4 py-2 border-b">
+                        {appointment.status}
+                      </td>
+                      <td className="px-4 py-2 border-b">
+                        <button
+                          onClick={() => handleProceedClick(appointment)}
+                          className="bg-blue-900 text-white px-4 py-2 rounded"
+                        >
+                          Proceed
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                : null}
             </tbody>
           </table>
         </div>
