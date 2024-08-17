@@ -24,7 +24,7 @@ const NewAppointment = () => {
   const [dependents, setDependents] = useState([]);
   const [selectedDependent, setSelectedDependent] = useState("");
   const [newDependent, setNewDependent] = useState(false);
-
+  const [dependentsFetch, setDependentsFetched] = useState(false);
   const handleTypeChange = (e) => {
     const type = e.target.value;
     setAppointmentType(type);
@@ -99,12 +99,16 @@ const NewAppointment = () => {
         setDependents(response.data.dep);
 
         console.log(dependents);
+        setDependentsFetched(true);
       } else {
         console.error("Failed to fetch dependents");
       }
+
+      
     } catch (error) {
       console.error("Error fetching dependents:", error);
     }
+
   };
   useEffect(() => {
     console.log("Current appointments:", dependents.length);
@@ -114,8 +118,16 @@ const NewAppointment = () => {
     const value = e.target.value;
     if (value === "new") {
       setNewDependent(true);
-      resetFormData();
-    } else {
+      setFormData((prevFormData) =>({
+        ... prevFormData,
+        userId: formData.id,
+        relationship: dependent.relation,
+      }));
+      
+      // resetFormData();
+    } 
+    
+    else {
       setNewDependent(false);
       const dependent = dependents.find((dep) => dep._id === value);
       setFormData((prevFormData) => ({
@@ -157,7 +169,7 @@ const NewAppointment = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmits = (e) => {
     e.preventDefault();
     console.log(formData);
     resetFormData();
@@ -181,7 +193,8 @@ const NewAppointment = () => {
       <h2 className="text-3xl mb-4 text-center font-semibold">
         New Appointment
       </h2>
-      <form onSubmit={handleSubmit} className="max-w-md mx-auto">
+      <form onSubmit={handleSubmits} className="max-w-md mx-auto">
+        {/* starting  */}
         <div className="mb-4">
           <label htmlFor="appointmentType" className="block text-lg mb-2">
             Appointment Type:
@@ -198,8 +211,10 @@ const NewAppointment = () => {
             <option value="dependent">Dependent</option>
           </select>
         </div>
+
         {appointmentType && (
           <>
+            {/* student type or employee type */}
             <div className="mb-4">
               <label htmlFor="id" className="block text-lg mb-2">
                 {appointmentType === "student" ? "Student ID:" : "Employee ID:"}
@@ -216,6 +231,8 @@ const NewAppointment = () => {
                 required
               />
             </div>
+
+            {/* fetch detail button for student and employee */}
             {!detailsFetched && appointmentType !== "dependent" && (
               <button
                 type="button"
@@ -225,15 +242,20 @@ const NewAppointment = () => {
                 Fetch Details
               </button>
             )}
+
             {appointmentType === "dependent" && !detailsFetched && (
               <div>
-                <button
+                {(!dependentsFetch) && (
+                  <button
                   type="button"
                   onClick={handleFetchDependents}
                   className="w-full bg-blue-900 text-white p-2 rounded mb-4"
                 >
                   Fetch Dependents
                 </button>
+                )}
+                
+
                 {dependents.length > 0 && (
                   <div className="mb-4">
                     <label htmlFor="dependent" className="block text-lg mb-2">
@@ -255,18 +277,12 @@ const NewAppointment = () => {
                     </select>
                   </div>
                 )}
-                {selectedDependent === "new" && (
-                  <button
-                    type="button"
-                    onClick={() => setNewDependent(true)}
-                    className="w-full bg-blue-900 text-white p-2 rounded mb-4"
-                  >
-                    Add Dependent Details
-                  </button>
-                )}
+
+
               </div>
             )}
-            {(detailsFetched || newDependent) && (
+
+            {detailsFetched && appointmentType !== "dependent" && (
               <>
                 <div className="mt-4 border border-gray-300 p-4">
                   <h3 className="text-xl mb-2">Patient Details</h3>
@@ -289,7 +305,415 @@ const NewAppointment = () => {
                     <strong>Relationship:</strong> {formData.relationship}
                   </p>
                 </div>
-                {newDependent && (
+
+                <div className="mt-4 border border-gray-300 p-4">
+                  <h3 className="text-xl mb-2">Reason for Visit</h3>
+                  <textarea
+                    id="reasonForVisit"
+                    name="reasonForVisit"
+                    value={formData.reasonForVisit}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        reasonForVisit: e.target.value,
+                      })
+                    }
+                    className="w-full p-2 border border-gray-300 rounded"
+                    required
+                  />
+                </div>
+                    {/* vitals for employee and student */}
+                <div className="mt-4 border border-gray-300 p-4">
+                    <h3 className="text-xl mb-2">Vitals</h3>
+                    {editVitals ? (
+                      <div>
+                        <div className="mb-4">
+                          <label
+                            htmlFor="height"
+                            className="block text-lg mb-2"
+                          >
+                            Height:
+                          </label>
+                          <input
+                            type="text"
+                            id="height"
+                            name="height"
+                            value={formData.height}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                height: e.target.value,
+                              })
+                            }
+                            className="w-full p-2 border border-gray-300 rounded"
+                          />
+                        </div>
+                        <div className="mb-4">
+                          <label
+                            htmlFor="weight"
+                            className="block text-lg mb-2"
+                          >
+                            Weight:
+                          </label>
+                          <input
+                            type="text"
+                            id="weight"
+                            name="weight"
+                            value={formData.weight}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                weight: e.target.value,
+                              })
+                            }
+                            className="w-full p-2 border border-gray-300 rounded"
+                          />
+                        </div>
+                        <div className="mb-4">
+                          <label
+                            htmlFor="body_temp"
+                            className="block text-lg mb-2"
+                          >
+                            Body Temperature:
+                          </label>
+                          <input
+                            type="text"
+                            id="body_temp"
+                            name="body_temp"
+                            value={formData.body_temp}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                body_temp: e.target.value,
+                              })
+                            }
+                            className="w-full p-2 border border-gray-300 rounded"
+                          />
+                        </div>
+                        <div className="mb-4">
+                          <label htmlFor="bp" className="block text-lg mb-2">
+                            Blood Pressure:
+                          </label>
+                          <input
+                            type="text"
+                            id="bp"
+                            name="bp"
+                            value={formData.bp}
+                            onChange={(e) =>
+                              setFormData({ ...formData, bp: e.target.value })
+                            }
+                            className="w-full p-2 border border-gray-300 rounded"
+                          />
+                        </div>
+                        <div className="mb-4">
+                          <label
+                            htmlFor="bloodGroup"
+                            className="block text-lg mb-2"
+                          >
+                            Blood Group:
+                          </label>
+                          <input
+                            type="text"
+                            id="bloodGroup"
+                            name="bloodGroup"
+                            value={formData.bloodGroup}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                bloodGroup: e.target.value,
+                              })
+                            }
+                            className="w-full p-2 border border-gray-300 rounded"
+                          />
+                        </div>
+                        <div className="mb-4">
+                          <label htmlFor="spo2" className="block text-lg mb-2">
+                            SpO2:
+                          </label>
+                          <input
+                            type="text"
+                            id="spo2"
+                            name="spo2"
+                            value={formData.spo2}
+                            onChange={(e) =>
+                              setFormData({ ...formData, spo2: e.target.value })
+                            }
+                            className="w-full p-2 border border-gray-300 rounded"
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={handleSaveChanges}
+                          className="w-full bg-blue-900 text-white p-2 rounded"
+                        >
+                          Save Changes
+                        </button>
+                      </div>
+                    ) : (
+                      <div>
+                        <p>
+                          <strong>Height:</strong> {formData.height}
+                        </p>
+                        <p>
+                          <strong>Weight:</strong> {formData.weight}
+                        </p>
+                        <p>
+                          <strong>Body Temperature:</strong>{" "}
+                          {formData.bodyTemperature}
+                        </p>
+                        <p>
+                          <strong>Blood Pressure:</strong>{" "}
+                          {formData.bloodPressure}
+                        </p>
+                        <p>
+                          <strong>Blood Group:</strong> {formData.bloodGroup}
+                        </p>
+                        <p>
+                          <strong>SpO2:</strong> {formData.spo2}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={handleUpdateVitals}
+                          className="w-full bg-blue-900 text-white p-2 rounded"
+                        >
+                          Update Vitals
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  
+                  <button
+                  type="submit"
+                  onClick={handlesubmit}
+                  className="w-full bg-green-500 text-white p-2 rounded mt-4"
+                >
+                  Submit
+                </button>
+              </>
+            )}
+
+            {appointmentType === "dependent" && detailsFetched && (
+              <>  
+                  <div className="mt-4 border border-gray-300 p-4">
+                  <h3 className="text-xl mb-2">Patient Details</h3>
+                  <p>
+                    <strong>User ID:</strong> {formData.userId}
+                  </p>
+                  <p>
+                    <strong>Name:</strong> {formData.name}
+                  </p>
+                  <p>
+                    <strong>Date of Birth:</strong> {formData.dob}
+                  </p>
+                  <p>
+                    <strong>Gender:</strong> {formData.gender}
+                  </p>
+                  <p>
+                    <strong>Contact No.:</strong> {formData.contactNo}
+                  </p>
+                  <p>
+                    <strong>Relationship:</strong> {formData.relationship}
+                  </p>
+                </div>
+
+                <div className="mt-4 border border-gray-300 p-4">
+                  <h3 className="text-xl mb-2">Reason for Visit</h3>
+                  <textarea
+                    id="reasonForVisit"
+                    name="reasonForVisit"
+                    value={formData.reasonForVisit}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        reasonForVisit: e.target.value,
+                      })
+                    }
+                    className="w-full p-2 border border-gray-300 rounded"
+                    required
+                  />
+                </div>
+
+                  <div className="mt-4 border border-gray-300 p-4">
+                    <h3 className="text-xl mb-2">Vitals</h3>
+                    {editVitals ? (
+                      <div>
+                        <div className="mb-4">
+                          <label
+                            htmlFor="height"
+                            className="block text-lg mb-2"
+                          >
+                            Height:
+                          </label>
+                          <input
+                            type="text"
+                            id="height"
+                            name="height"
+                            value={formData.height}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                height: e.target.value,
+                              })
+                            }
+                            className="w-full p-2 border border-gray-300 rounded"
+                          />
+                        </div>
+                        <div className="mb-4">
+                          <label
+                            htmlFor="weight"
+                            className="block text-lg mb-2"
+                          >
+                            Weight:
+                          </label>
+                          <input
+                            type="text"
+                            id="weight"
+                            name="weight"
+                            value={formData.weight}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                weight: e.target.value,
+                              })
+                            }
+                            className="w-full p-2 border border-gray-300 rounded"
+                          />
+                        </div>
+                        <div className="mb-4">
+                          <label
+                            htmlFor="body_temp"
+                            className="block text-lg mb-2"
+                          >
+                            Body Temperature:
+                          </label>
+                          <input
+                            type="text"
+                            id="body_temp"
+                            name="body_temp"
+                            value={formData.body_temp}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                body_temp: e.target.value,
+                              })
+                            }
+                            className="w-full p-2 border border-gray-300 rounded"
+                          />
+                        </div>
+                        <div className="mb-4">
+                          <label htmlFor="bp" className="block text-lg mb-2">
+                            Blood Pressure:
+                          </label>
+                          <input
+                            type="text"
+                            id="bp"
+                            name="bp"
+                            value={formData.bp}
+                            onChange={(e) =>
+                              setFormData({ ...formData, bp: e.target.value })
+                            }
+                            className="w-full p-2 border border-gray-300 rounded"
+                          />
+                        </div>
+                        <div className="mb-4">
+                          <label
+                            htmlFor="bloodGroup"
+                            className="block text-lg mb-2"
+                          >
+                            Blood Group:
+                          </label>
+                          <input
+                            type="text"
+                            id="bloodGroup"
+                            name="bloodGroup"
+                            value={formData.bloodGroup}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                bloodGroup: e.target.value,
+                              })
+                            }
+                            className="w-full p-2 border border-gray-300 rounded"
+                          />
+                        </div>
+                        <div className="mb-4">
+                          <label htmlFor="spo2" className="block text-lg mb-2">
+                            SpO2:
+                          </label>
+                          <input
+                            type="text"
+                            id="spo2"
+                            name="spo2"
+                            value={formData.spo2}
+                            onChange={(e) =>
+                              setFormData({ ...formData, spo2: e.target.value })
+                            }
+                            className="w-full p-2 border border-gray-300 rounded"
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={handleSaveChanges}
+                          className="w-full bg-blue-900 text-white p-2 rounded"
+                        >
+                          Save Changes
+                        </button>
+                      </div>
+                    ) : (
+                      <div>
+                        <p>
+                          <strong>Height:</strong> {formData.height}
+                        </p>
+                        <p>
+                          <strong>Weight:</strong> {formData.weight}
+                        </p>
+                        <p>
+                          <strong>Body Temperature:</strong>{" "}
+                          {formData.bodyTemperature}
+                        </p>
+                        <p>
+                          <strong>Blood Pressure:</strong>{" "}
+                          {formData.bloodPressure}
+                        </p>
+                        <p>
+                          <strong>Blood Group:</strong> {formData.bloodGroup}
+                        </p>
+                        <p>
+                          <strong>SpO2:</strong> {formData.spo2}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={handleUpdateVitals}
+                          className="w-full bg-blue-900 text-white p-2 rounded"
+                        >
+                          Update Vitals dependent
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  <button
+                  type="submit"
+                  onClick={handlesubmit}
+                  className="w-full bg-green-500 text-white p-2 rounded mt-4"
+                >
+                  Submit
+                </button>
+              </>
+            )}
+            
+
+
+            {(newDependent) && (
+              <>
+                <div className="mt-4 border border-gray-300 p-4">
+                  {/* <h3 className="text-xl mb-2">Patient Details</h3> */}
+                  <p>
+                    <strong>User ID:</strong> {formData.userId}
+                  </p>
+                  
+                </div>
+
                   <div className="mt-4 border border-gray-300 p-4">
                     <h3 className="text-xl mb-2">New Dependent Details</h3>
                     <div className="mb-4">
@@ -319,6 +743,22 @@ const NewAppointment = () => {
                         value={formData.dob}
                         onChange={(e) =>
                           setFormData({ ...formData, dob: e.target.value })
+                        }
+                        className="w-full p-2 border border-gray-300 rounded"
+                        required
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label htmlFor="relationship" className="block text-lg mb-2">
+                        Relationship:
+                      </label>
+                      <input
+                        type="text"
+                        id="relationship"
+                        name="relationship"
+                        value={formData.relationship}
+                        onChange={(e) =>
+                          setFormData({ ...formData, relationship: e.target.value })
                         }
                         className="w-full p-2 border border-gray-300 rounded"
                         required
@@ -362,29 +802,6 @@ const NewAppointment = () => {
                         className="w-full p-2 border border-gray-300 rounded"
                         required
                       />
-                    </div>
-                  </div>
-                )}
-                <div className="mt-4 border border-gray-300 p-4">
-                  <h3 className="text-xl mb-2">Reason for Visit</h3>
-                  <textarea
-                    id="reasonForVisit"
-                    name="reasonForVisit"
-                    value={formData.reasonForVisit}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        reasonForVisit: e.target.value,
-                      })
-                    }
-                    className="w-full p-2 border border-gray-300 rounded"
-                    required
-                  />
-                </div>
-                <div className="mt-4 border border-gray-300 p-4">
-                  <h3 className="text-xl mb-2">Vitals</h3>
-                  {editVitals ? (
-                    <div>
                       <div className="mb-4">
                         <label htmlFor="height" className="block text-lg mb-2">
                           Height:
@@ -395,7 +812,10 @@ const NewAppointment = () => {
                           name="height"
                           value={formData.height}
                           onChange={(e) =>
-                            setFormData({ ...formData, height: e.target.value })
+                            setFormData({
+                              ...formData,
+                              height: e.target.value,
+                            })
                           }
                           className="w-full p-2 border border-gray-300 rounded"
                         />
@@ -410,7 +830,31 @@ const NewAppointment = () => {
                           name="weight"
                           value={formData.weight}
                           onChange={(e) =>
-                            setFormData({ ...formData, weight: e.target.value })
+                            setFormData({
+                              ...formData,
+                              weight: e.target.value,
+                            })
+                          }
+                          className="w-full p-2 border border-gray-300 rounded"
+                        />
+                      </div>
+                      <div className="mb-4">
+                        <label
+                          htmlFor="body_temp"
+                          className="block text-lg mb-2"
+                        >
+                          Body Temperature:
+                        </label>
+                        <input
+                          type="text"
+                          id="body_temp"
+                          name="body_temp"
+                          value={formData.body_temp}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              body_temp: e.target.value,
+                            })
                           }
                           className="w-full p-2 border border-gray-300 rounded"
                         />
@@ -487,55 +931,22 @@ const NewAppointment = () => {
                           className="w-full p-2 border border-gray-300 rounded"
                         />
                       </div>
-                      <button
-                        type="button"
-                        onClick={handleSaveChanges}
-                        className="w-full bg-blue-900 text-white p-2 rounded"
-                      >
-                        Save Changes
-                      </button>
                     </div>
-                  ) : (
-                    <div>
-                      <p>
-                        <strong>Height:</strong> {formData.height}
-                      </p>
-                      <p>
-                        <strong>Weight:</strong> {formData.weight}
-                      </p>
-                      <p>
-                        <strong>Body Temperature:</strong>{" "}
-                        {formData.bodyTemperature}
-                      </p>
-                      <p>
-                        <strong>Blood Pressure:</strong>{" "}
-                        {formData.bloodPressure}
-                      </p>
-                      <p>
-                        <strong>Blood Group:</strong> {formData.bloodGroup}
-                      </p>
-                      <p>
-                        <strong>SpO2:</strong> {formData.spo2}
-                      </p>
-                      <button
-                        type="button"
-                        onClick={handleUpdateVitals}
-                        className="w-full bg-blue-900 text-white p-2 rounded"
-                      >
-                        Update Vitals
-                      </button>
+                    <div className="mb-4">
+                      <button type="button"
+                      onClick={() => handleDependentChange}
+                      className="w-full bg-blue-900 text-white p-2 rounded mb-4">
+                      Add Dependent Details
+                    </button>
                     </div>
-                  )}
-                </div>
-                <button
-                  type="submit"
-                  onClick={handlesubmit}
-                  className="w-full bg-green-500 text-white p-2 rounded mt-4"
-                >
-                  Submit
-                </button>
-              </>
+                  </div>
+
+                 </> 
+              
             )}
+
+                
+          
           </>
         )}
       </form>
