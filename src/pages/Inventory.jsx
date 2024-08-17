@@ -10,9 +10,7 @@ const Inventory = () => {
     e.preventDefault();
     setShowInventory(!showInventory);
     try {
-      const response = await axios.get(
-        "/api/staff/getstock"
-      ); // Adjust the endpoint according to your API
+      const response = await axios.get("/api/staff/getstock"); // Adjust the endpoint according to your API
       if (response.status === 200) {
         const data = response.data; // axios automatically parses JSON
         setMedicines(data.data); // Assuming data is an array of medicine objects
@@ -22,7 +20,10 @@ const Inventory = () => {
     } catch (error) {
       console.error("Error fetching medicines:", error);
     }
-
+  };
+  const handleRefresh = (e) => {
+    e.preventDefault();
+    handelinventory();
   };
   useEffect(() => {
     console.log("Updated medicines:", medicines);
@@ -33,12 +34,7 @@ const Inventory = () => {
       <h2 className="text-3xl mb-4 text-center font-semibold">
         Available Medicines
       </h2>
-      <button
-        onClick={handelinventory}
-        className="bg-blue-900 text-white p-2 rounded mb-4"
-      >
-        {showInventory ? "Hide Inventory" : "Show Inventory"}
-      </button>
+      
       {showInventory && (
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white border border-gray-300">
@@ -72,8 +68,26 @@ const Inventory = () => {
               ))}
             </tbody>
           </table>
+          <div className="flex justify-center mt-2">
+          <button
+              onClick={handleRefresh}
+              className="bg-green-500 text-white p-2 rounded"
+            >
+              Refresh
+            </button>
+          </div>
         </div>
+        
       )}
+      <div className="flex justify-center mt-2">
+        <button
+          onClick={handelinventory}
+          className="bg-blue-900 text-white p-2 rounded mb-4"
+        >
+          {showInventory ? "Hide Inventory" : "Show Inventory"}
+        </button>
+       
+      </div>
     </main>
   );
 };
