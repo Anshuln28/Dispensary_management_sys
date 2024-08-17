@@ -11,7 +11,7 @@ const DocAppointments = () => {
 
   const handleProceedClick = (appointment) => {
     const rolePath = user.userType === "doctor" ? "/doctor" : "/admin";
-    navigate(`${rolePath}/consulted-appointments`, { state: appointment });
+    navigate(`${rolePath}/patient-consultation-form`, { state: appointment });
   };
 
   const fetchAppointments = async () => {
