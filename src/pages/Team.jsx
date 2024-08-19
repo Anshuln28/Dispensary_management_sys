@@ -81,7 +81,7 @@ const Team = () => {
                     />
                   </a>
                   <a
-                    href="https://github.com/vinaytheprogrammer"
+                    href="https://github.com/anshuln28"
                     target="_blank"
                     rel="noreferrer"
                     className="text-white"
